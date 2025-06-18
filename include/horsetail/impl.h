@@ -9,5 +9,6 @@ void ImplInit(void);
 void ImplShutdown(int code);
 void ImplBeginLoop(void);
 void ImplFinishUpdate(void);
+void ImplShowError(const char *buf);
 
 #endif

@@ -1,3 +1,4 @@
+#define _ISOC99_SOURCE
 #include <stdio.h>
 
 #include "horsetail/core.h"
@@ -9,11 +10,16 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-HtBool gRunning = HT_TRUE;
-
 static void HtpInit();
 static void HtpProcessEvents(void);
+static HtBool HtpMainEventHandler(HtEvent *event);
 static void HtpShutdown(int code);
+
+static HtBool gRunning = HT_TRUE;
+static HtEventHandlerProc gEventHandlers[] = {
+    HtpMainEventHandler,
+    LgHandleEvent,
+};
 
 void HtMain(void)
 {
@@ -42,32 +48,47 @@ static void HtpProcessEvents(void)
 
     while ((event = HtPopEvent()))
     {
+        size_t i;
+
         assert (event->type != HT_EVENT_NONE);
-        switch (event->type)
+
+        for(i = 0; i < HT_ARRAY_SIZE(gEventHandlers); i++)
         {
-        case HT_EVENT_KEY_DOWN:
-            if (event->keyPress.key == HT_KEY_ESC)
+            HtEventHandlerProc eventHandlerProc;
+
+            eventHandlerProc = gEventHandlers[i];
+
+            if (eventHandlerProc(event))
             {
-                gRunning = HT_FALSE;
+                /* handled */
+                break;
             }
-            break;
-        case HT_EVENT_QUIT:
-            gRunning = HT_FALSE;
-            break;
-        default:
-            break;
         }
     }
 }
 
+static HtBool HtpMainEventHandler(HtEvent *event)
+{
+    if (event->type == HT_EVENT_QUIT)
+    {
+        gRunning = HT_FALSE;
+        return HT_TRUE;
+    }
+
+    return HT_FALSE;
+}
+
 void HtError(const char *fmt, ...)
 {
+    char buf[512] = {0};
+    size_t size = sizeof(buf)/sizeof(char);
+
     va_list args;
     va_start (args, fmt);
-    fprintf(stderr, "Error: ");
-    vfprintf(stderr, fmt, args);
-    fprintf(stderr, "\n");
+    vsnprintf(buf, size, fmt, args);
     va_end(args);
+
+    ImplShowError(buf);
 
     HtpShutdown(-1);
 }

@@ -6,4 +6,7 @@
 void HtMain(void);
 void HtError(const char *fmt, ...);
 
+/* subsystem update functions */
+HtBool LgHandleEvent();
+
 #endif

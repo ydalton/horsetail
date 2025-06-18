@@ -25,6 +25,7 @@ typedef enum
 } HtResult;
 
 #define HT_TO_STRING(str)       (#str)
+#define HT_ARRAY_SIZE(arr)      (sizeof(arr)/sizeof(arr[0]))
 
 #define HtAssert(statement)     assert((statement))
 

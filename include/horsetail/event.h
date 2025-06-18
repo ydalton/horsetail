@@ -1,6 +1,8 @@
 #ifndef _HORSETAIL_EVENT_H_
 #define _HORSETAIL_EVENT_H_
 
+#include "horsetail/defs.h"
+
 #define HT_MAX_EVENTS           64
 
 typedef enum
@@ -38,6 +40,9 @@ typedef struct {
 } HtEvent;
 
 void HtPostEvent(HtEvent *event);
+void HtPostQuitEvent(void);
 HtEvent *HtPopEvent(void);
+
+typedef HtBool (*HtEventHandlerProc)(HtEvent *);
 
 #endif

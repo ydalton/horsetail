@@ -1,4 +1,5 @@
 #include <SDL3/SDL.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "horsetail/core.h"
@@ -137,6 +138,11 @@ static HtKey ImplpGetKeycode(SDL_Keycode sdlKeyCode)
 void ImplFinishUpdate()
 {
     SDL_GL_SwapWindow(gWindow);
+}
+
+void ImplShowError(const char *buf)
+{
+    fputs(buf, stderr);
 }
 
 void ImplShutdown(int code)

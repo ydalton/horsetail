@@ -16,6 +16,7 @@ horsetail_sources = files(
   'src/core/event.c',
   'src/core/main.c',
   'src/core/util.c',
+  'src/lg/lg.c',
   'src/impl/sdl.c',
   'src/vg/vg.c',
 )
