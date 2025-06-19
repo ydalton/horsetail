@@ -95,5 +95,6 @@ void HtError(const char *fmt, ...)
 
 static void HtpShutdown(int code)
 {
+    VgShutdown();
     ImplShutdown(code);
 }
