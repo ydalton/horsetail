@@ -5,8 +5,12 @@
 
 void HtMain(void);
 void HtError(const char *fmt, ...);
+void HtLog(const char *fmt, ...);
+
+/* subsystem handler functions */
+HtBool LgHandleEvent();
 
 /* subsystem update functions */
-HtBool LgHandleEvent();
+void LgUpdate();
 
 #endif

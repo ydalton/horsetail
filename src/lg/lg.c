@@ -12,3 +12,7 @@ HtBool LgHandleEvent(HtEvent *event)
 
     return HT_FALSE;
 }
+
+void LgUpdate(void)
+{
+}

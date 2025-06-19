@@ -40,8 +40,14 @@ typedef struct {
 } HtEvent;
 
 void HtPostEvent(HtEvent *event);
-void HtPostQuitEvent(void);
 HtEvent *HtPopEvent(void);
+
+#define HtPostQuitEvent()           \
+    {                               \
+        HtEvent event = {0};        \
+        event.type = HT_EVENT_QUIT; \
+        HtPostEvent(&event);        \
+    }
 
 typedef HtBool (*HtEventHandlerProc)(HtEvent *);
 

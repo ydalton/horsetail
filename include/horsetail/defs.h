@@ -6,8 +6,13 @@
 /* TODO: remove later */
 #include <assert.h>
 
-typedef int32_t HtInt;
-typedef size_t HtSize;
+typedef uint8_t     u8;
+typedef uint32_t    u32;
+typedef int8_t      i8;
+typedef int32_t     i32;
+
+typedef float       f32;
+typedef size_t      usize;
 
 typedef enum
 {

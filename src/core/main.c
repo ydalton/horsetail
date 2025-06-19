@@ -29,6 +29,7 @@ void HtMain(void)
     {
         ImplBeginLoop();
         HtpProcessEvents();
+        LgUpdate();
         VgUpdate();
         ImplFinishUpdate();
     }
@@ -81,7 +82,7 @@ static HtBool HtpMainEventHandler(HtEvent *event)
 void HtError(const char *fmt, ...)
 {
     char buf[512] = {0};
-    size_t size = sizeof(buf)/sizeof(char);
+    usize size = HT_ARRAY_SIZE(buf);
 
     va_list args;
     va_start (args, fmt);
@@ -91,6 +92,20 @@ void HtError(const char *fmt, ...)
     ImplShowError(buf);
 
     HtpShutdown(-1);
+}
+
+void HtLog(const char *fmt, ...)
+{
+    char buf[512] = {0};
+    usize size = HT_ARRAY_SIZE(buf);
+
+    va_list args;
+    va_start (args, fmt);
+    vsnprintf(buf, size, fmt, args);
+    va_end(args);
+
+    /* TODO: change this */
+    puts(buf);
 }
 
 static void HtpShutdown(int code)

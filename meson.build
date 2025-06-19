@@ -19,6 +19,7 @@ horsetail_sources = files(
   'src/lg/lg.c',
   'src/impl/sdl.c',
   'src/vg/vg.c',
+  'src/vg/vg_gl.c',
 )
 
 horsetail_dependencies = [
