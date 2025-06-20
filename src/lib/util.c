@@ -1,5 +1,6 @@
-#include "horsetail/defs.h"
-#include "horsetail/util.h"
+#include <string.h>
+
+#include "horsetail/horsetail.h"
 
 #define RESULT_CASE(result) \
     case result: \
@@ -24,4 +25,9 @@ const char *HtResultToString(HtResult result)
     }
 
     return message;
+}
+
+void HtZeroMemory(void *ptr, usize size)
+{
+    memset(ptr, 0, size);
 }

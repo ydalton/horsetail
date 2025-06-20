@@ -1,5 +1,4 @@
-#include "horsetail/core.h"
-#include "horsetail/event.h"
+#include "horsetail/horsetail.h"
 
 HtBool LgHandleEvent(HtEvent *event)
 {

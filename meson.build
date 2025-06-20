@@ -15,8 +15,9 @@ glesv2_dep = dependency('glesv2')
 horsetail_sources = files(
   'src/core/event.c',
   'src/core/main.c',
-  'src/core/util.c',
   'src/lg/lg.c',
+  'src/lib/math.c',
+  'src/lib/util.c',
   'src/impl/sdl.c',
   'src/vg/vg.c',
   'src/vg/vg_gl.c',

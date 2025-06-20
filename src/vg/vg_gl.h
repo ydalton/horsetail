@@ -18,18 +18,6 @@ typedef struct
     usize vertexCount;
 } VgGLArrayBuffer;
 
-typedef enum
-{
-    VG_GL_SHADER_TYPE_VERTEX   = 1,
-    VG_GL_SHADER_TYPE_FRAGMEMT = 2,
-} VgGLShaderType;
-
-typedef struct
-{
-    hShader hShader;
-    VgGLShaderType shaderType;
-} VgGLShader;
-
 typedef struct
 {
     hProgram hProgram;
@@ -39,7 +27,6 @@ typedef struct
 {
     hTexture hTexture;
 } VgGLTexture;
-
 
 /* general */
 void VgGLBeginFrame(void);
@@ -51,6 +38,7 @@ void VgGLArrayBuffer_DeInit(VgGLArrayBuffer *arrayBuffer);
 
 HtBool VgGLProgram_Init(const char *srcVertex, const char *srcFragment, VgGLProgram *program);
 void VgGLProgram_Use(VgGLProgram *program);
+HtBool VgGLProgram_UniformMat4(VgGLProgram *program, const char *name, const mat4 *data);
 void VgGLProgram_DeInit(VgGLProgram *program);
 
 HtBool VgGLTexture_Init(usize width, usize height, u8 *data, VgGLTexture *texture);

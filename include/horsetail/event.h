@@ -1,7 +1,9 @@
 #ifndef _HORSETAIL_EVENT_H_
 #define _HORSETAIL_EVENT_H_
 
-#include "horsetail/defs.h"
+#ifndef _HORSETAIL_H_
+#error "Do not include this file seperately. Include horsetail.h"
+#endif
 
 #define HT_MAX_EVENTS           64
 

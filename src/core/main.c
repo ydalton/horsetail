@@ -1,11 +1,9 @@
 #define _ISOC99_SOURCE
 #include <stdio.h>
 
-#include "horsetail/core.h"
+#include "horsetail/horsetail.h"
 #include "horsetail/impl.h"
-#include "horsetail/event.h"
 #include "horsetail/vg.h"
-#include "horsetail/util.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -51,7 +49,7 @@ static void HtpProcessEvents(void)
     {
         size_t i;
 
-        assert (event->type != HT_EVENT_NONE);
+        HtAssert(event->type != HT_EVENT_NONE);
 
         for(i = 0; i < HT_ARRAY_SIZE(gEventHandlers); i++)
         {

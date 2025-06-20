@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "horsetail/core.h"
-#include "horsetail/event.h"
+#include "horsetail/horsetail.h"
 #include "horsetail/impl.h"
 
 SDL_Window *gWindow = NULL;

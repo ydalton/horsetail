@@ -1,11 +1,12 @@
 #include <GLES2/gl2.h>
 #include "horsetail/defs.h"
 #include "horsetail/core.h"
+#include "horsetail/math.h"
 #include "vg_gl.h"
 
 static i32 gVertexAttribPointers[] = {
     3,          /* vertex */
-    3,          /* color */
+    2,          /* texture coordinates */
 };
 
 HtBool VgGLArrayBuffer_Init(f32 *vertices, usize sizeVertex, VgGLArrayBuffer *arrayBuffer)
@@ -144,6 +145,28 @@ void VgGLProgram_Use(VgGLProgram *program)
     glUseProgram(hProgram);
 }
 
+HtBool VgGLProgram_UniformMat4(VgGLProgram *program, const char *name, const mat4 *mat)
+{
+    GLint location = 0;
+
+    HtAssert(program != NULL);
+    HtAssert(name != NULL);
+    HtAssert(mat != NULL);
+    HtAssert(program->hProgram != GL_NULL_OBJECT);
+
+    VgGLProgram_Use(program);
+
+    location = glGetUniformLocation(program->hProgram, name);
+    if (location == -1)
+    {
+        return HT_FALSE;
+    }
+
+    glUniformMatrix4fv(location, 1, GL_FALSE, (float *) mat->data);
+
+    return HT_TRUE;
+}
+
 void VgGLProgram_DeInit(VgGLProgram *program)
 {
     HtAssert(program != NULL);
@@ -151,6 +174,44 @@ void VgGLProgram_DeInit(VgGLProgram *program)
     {
         glUseProgram(program->hProgram);
     }
+}
+
+HtBool VgGLTexture_Init(usize width, usize height, u8 *data, VgGLTexture *texture)
+{
+    hTexture hTexture;
+
+    HtAssert(data != NULL);
+    HtAssert(texture != NULL);
+
+    glGenTextures(1, &hTexture);
+    glBindTexture(GL_TEXTURE_2D, hTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glBindTexture(GL_TEXTURE_2D, GL_NULL_OBJECT);
+
+    texture->hTexture = hTexture;
+
+    return HT_TRUE;
+}
+
+void VgGLTexture_Bind(VgGLTexture *texture)
+{
+    hTexture hTexture;
+
+    if (texture == NULL)
+    {
+        hTexture = GL_NULL_OBJECT;
+    }
+    else
+    {
+        hTexture = texture->hTexture;
+    }
+
+    glBindTexture(GL_TEXTURE_2D, hTexture);
 }
 
 void VgGLBeginFrame(void)
