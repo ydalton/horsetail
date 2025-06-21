@@ -1,14 +1,42 @@
 #include <GLES2/gl2.h>
+
 #include "horsetail/defs.h"
 #include "horsetail/core.h"
 #include "horsetail/math.h"
 #include "horsetail/vg.h"
+
 #include "vg_gl.h"
 
 static i32 gVertexAttribPointers[] = {
     3,          /* vertex */
     2,          /* texture coordinates */
 };
+
+struct VgGLRendererProperty
+{
+    const char *name;
+    i32 property;
+};
+
+static struct VgGLRendererProperty gRendererProperties[] =
+{
+    { "vendor", GL_VENDOR},
+    { "renderer", GL_RENDERER},
+    { "version", GL_VERSION},
+    { "GLSL version", GL_SHADING_LANGUAGE_VERSION},
+};
+
+void VgGLLogRendererInfo(void)
+{
+    usize i = 0;
+
+    for(i = 0; i < HT_ARRAY_SIZE(gRendererProperties); i++)
+    {
+        struct VgGLRendererProperty *rendererProperty = &gRendererProperties[i];
+
+        HtLog("Vg: \t%s: %s", rendererProperty->name, glGetString(rendererProperty->property));
+    }
+}
 
 void VgGLSetViewport(const VgDisplaySize *displaySize)
 {
@@ -191,10 +219,10 @@ HtBool VgGLTexture_Init(usize width, usize height, u8 *data, VgGLTexture *textur
 
     glGenTextures(1, &hTexture);
     glBindTexture(GL_TEXTURE_2D, hTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glBindTexture(GL_TEXTURE_2D, GL_NULL_OBJECT);

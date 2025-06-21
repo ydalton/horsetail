@@ -3,6 +3,7 @@
 
 #include "horsetail/vg.h"
 
+void VgpLogRendererInfo(void);
 void VgpBeginFrame(void);
 void VgpEndFrame(void);
 void VgpOnResize(const VgDisplaySize *displaySize);

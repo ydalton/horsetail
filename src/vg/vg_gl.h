@@ -30,6 +30,7 @@ typedef struct
 } VgGLTexture;
 
 /* general */
+void VgGLLogRendererInfo(void);
 void VgGLBeginFrame(void);
 void VgGLSetViewport(const VgDisplaySize *displaySize);
 

@@ -16,6 +16,7 @@ float vrtTriangle[] = {
 };
 
 const char *srcVert =
+"precision mediump float;"
 "attribute vec3 aVertex;"
 "attribute vec2 aTexCoord;"
 "varying vec2 vTexCoord;"
@@ -29,6 +30,7 @@ const char *srcVert =
 "}";
 
 const char *srcFrag =
+"precision lowp float;"
 "varying vec2 vTexCoord;"
 "uniform sampler2D uTexture;"
 "void main()"
@@ -80,6 +82,15 @@ void VgInit(void)
     Mat4LookAt(VEC3(0.0, 0.0, 5.0), VEC3(0.0, 0.0, 0.0), VEC3(0.0, 1.0, 0.0), &view);
 
     glClearColor(0.1, 0.1, 0.1, 1.0);
+
+    HtLog("Vg: initialized");
+    VgpLogRendererInfo();
+}
+
+void VgpLogRendererInfo(void)
+{
+    HtLog("Vg: renderer info:");
+    VgGLLogRendererInfo();
 }
 
 void VgUpdate(void)
