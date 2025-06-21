@@ -8,24 +8,25 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-static void HtpInit();
 static void HtpProcessEvents(void);
-static HtBool HtpMainEventHandler(HtEvent *event);
+static HtBool HtpSystemEventHandler(HtEvent *event);
 static void HtpShutdown(int code);
 
 static HtBool gRunning = HT_TRUE;
 static HtEventHandlerProc gEventHandlers[] = {
-    HtpMainEventHandler,
+    HtpSystemEventHandler,
     LgHandleEvent,
 };
 
 void HtMain(void)
 {
-    HtpInit();
+    ImplInit();
+    VgInit();
 
     while (gRunning)
     {
         ImplBeginLoop();
+        ImplGetEvents();
         HtpProcessEvents();
         LgUpdate();
         VgUpdate();
@@ -33,12 +34,6 @@ void HtMain(void)
     }
 
     HtpShutdown(0);
-}
-
-static void HtpInit(void)
-{
-    ImplInit();
-    VgInit();
 }
 
 static void HtpProcessEvents(void)
@@ -66,15 +61,38 @@ static void HtpProcessEvents(void)
     }
 }
 
-static HtBool HtpMainEventHandler(HtEvent *event)
+static HtBool HtpSystemEventHandler(HtEvent *event)
 {
-    if (event->type == HT_EVENT_QUIT)
+    HtBool handled = HT_FALSE;
+
+    /* this event handler only handles system events. */
+    if (event->type < HT_EVENT_SYSTEM)
     {
+        return HT_FALSE;
+    }
+    
+    switch(event->type)
+    {
+    case HT_EVENT_QUIT:
         gRunning = HT_FALSE;
-        return HT_TRUE;
+        break;
+    case HT_EVENT_RESIZE:
+        {
+            VgDisplaySize displaySize = {0};
+
+            HtAssert(event->resize.newWidth != 0 && event->resize.newHeight != 0);
+
+            displaySize.width = event->resize.newWidth;
+            displaySize.height = event->resize.newHeight;
+
+            VgSetDisplaySize(&displaySize);
+        }
+        break;
+    default:
+        break;
     }
 
-    return HT_FALSE;
+    return handled;
 }
 
 void HtError(const char *fmt, ...)
@@ -87,9 +105,14 @@ void HtError(const char *fmt, ...)
     vsnprintf(buf, size, fmt, args);
     va_end(args);
 
-    ImplShowError(buf);
+    HtShowError(buf);
 
     HtpShutdown(-1);
+}
+
+void HtShowError(const char *buf)
+{
+    ImplShowError(buf);
 }
 
 void HtLog(const char *fmt, ...)

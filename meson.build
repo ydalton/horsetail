@@ -9,8 +9,15 @@ project(
   ]
 )
 
+cc = meson.get_compiler('c')
+
 sdl3_dep = dependency('sdl3')
 glesv2_dep = dependency('glesv2')
+math_dep = cc.find_library('m')
+
+if get_option('buildtype') == 'debug'
+  add_project_arguments('-DHT_DEBUG', language: 'c')
+endif
 
 horsetail_sources = files(
   'src/core/event.c',
@@ -18,14 +25,17 @@ horsetail_sources = files(
   'src/lg/lg.c',
   'src/lib/math.c',
   'src/lib/util.c',
+  'src/mem/mem.c',
   'src/impl/sdl.c',
   'src/vg/vg.c',
   'src/vg/vg_gl.c',
+  'src/vg/display.c',
 )
 
 horsetail_dependencies = [
   sdl3_dep,
-  glesv2_dep
+  glesv2_dep,
+  math_dep,
 ]
 
 include_dirs = [

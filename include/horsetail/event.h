@@ -10,9 +10,13 @@
 typedef enum
 {
     HT_EVENT_NONE = 0,
-    HT_EVENT_QUIT = 1,
     HT_EVENT_KEY_UP,
     HT_EVENT_KEY_DOWN,
+
+    /* system events */
+    HT_EVENT_SYSTEM = 0x1000,
+    HT_EVENT_QUIT,
+    HT_EVENT_RESIZE,
 } HtEventType;
 
 typedef enum
@@ -38,6 +42,11 @@ typedef struct {
         {
             HtKey key;
         } keyPress;
+        struct
+        {
+            i32 newWidth;
+            i32 newHeight;
+        } resize;
     };
 } HtEvent;
 

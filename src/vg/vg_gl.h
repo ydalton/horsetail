@@ -3,6 +3,7 @@
     
 #include <GLES2/gl2.h>
 #include "horsetail/defs.h"
+#include "horsetail/vg.h"
 
 #define GL_NULL_OBJECT          0
 
@@ -30,6 +31,7 @@ typedef struct
 
 /* general */
 void VgGLBeginFrame(void);
+void VgGLSetViewport(const VgDisplaySize *displaySize);
 
 HtBool VgGLArrayBuffer_Init(f32 *vertices, usize size, VgGLArrayBuffer *arrayBuffer);
 void VgGLArrayBuffer_Bind(VgGLArrayBuffer *arrayBuffer);

@@ -4,10 +4,10 @@
 
 #include "horsetail/horsetail.h"
 #include "horsetail/impl.h"
+#include "horsetail/vg.h"
 
 SDL_Window *gWindow = NULL;
 
-static void ImplpGetEvents(void);
 static HtKey ImplpGetKeycode(SDL_Keycode keycode);
 
 int main(int argc, char **argv)
@@ -24,10 +24,10 @@ int main(int argc, char **argv)
 void ImplInit(void)
 {
     SDL_Init(SDL_INIT_VIDEO);
-    gWindow = SDL_CreateWindow(IMPL_DEFAULT_DISPLAY_NAME,
-                               IMPL_DEFAULT_DISPLAY_WIDTH,
-                               IMPL_DEFAULT_DISPLAY_HEIGHT,
-                               SDL_WINDOW_OPENGL);
+    gWindow = SDL_CreateWindow(VG_DISPLAY_DEFAULT_NAME,
+                               VG_DISPLAY_DEFAULT_WIDTH,
+                               VG_DISPLAY_DEFAULT_HEIGHT,
+                               SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
     HtAssert(gWindow != NULL);
 
@@ -41,11 +41,10 @@ void ImplInit(void)
 
 void ImplBeginLoop(void)
 {
-    ImplpGetEvents();
 }
 
 /* translate events from implementation to events */
-static void ImplpGetEvents(void)
+void ImplGetEvents(void)
 {
     SDL_Event sdlEvent;
 
@@ -82,6 +81,11 @@ static void ImplpGetEvents(void)
             break;
         case SDL_EVENT_QUIT:
             htEvent.type = HT_EVENT_QUIT;
+            break;
+        case SDL_EVENT_WINDOW_RESIZED:
+            htEvent.type = HT_EVENT_RESIZE;
+            htEvent.resize.newWidth = sdlEvent.window.data1;
+            htEvent.resize.newHeight = sdlEvent.window.data2;
             break;
         default:
             postEvent = HT_FALSE;

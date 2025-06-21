@@ -2,12 +2,18 @@
 #include "horsetail/defs.h"
 #include "horsetail/core.h"
 #include "horsetail/math.h"
+#include "horsetail/vg.h"
 #include "vg_gl.h"
 
 static i32 gVertexAttribPointers[] = {
     3,          /* vertex */
     2,          /* texture coordinates */
 };
+
+void VgGLSetViewport(const VgDisplaySize *displaySize)
+{
+    glViewport(0, 0, displaySize->width, displaySize->height);
+}
 
 HtBool VgGLArrayBuffer_Init(f32 *vertices, usize sizeVertex, VgGLArrayBuffer *arrayBuffer)
 {
