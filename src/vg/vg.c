@@ -6,13 +6,13 @@
 #include "vgp.h"
 #include "vg_gl.h"
 
-float vrtTriangle[] = {
-    0.5, 0.5, 0.0, 1.0, 0.0,
-    -0.5, 0.5, 0.0, 0.0, 0.0,
-    0.5, -0.5, 0.0, 1.0, 1.0,
-    0.5, -0.5, 0.0, 1.0, 1.0,
-    -0.5, -0.5, 0.0, 0.0, 1.0,
-    -0.5, 0.5, 0.0, 0.0, 0.0,
+float vrtSquare[] = {
+    1.0, 1.0, 0.0, 1.0, 0.0,
+    -1.0, 1.0, 0.0, 0.0, 0.0,
+    1.0, -1.0, 0.0, 1.0, 1.0,
+    1.0, -1.0, 0.0, 1.0, 1.0,
+    -1.0, -1.0, 0.0, 0.0, 1.0,
+    -1.0, 1.0, 0.0, 0.0, 0.0,
 };
 
 const char *srcVert =
@@ -47,49 +47,56 @@ const char *srcFrag =
 #define MAGENTA 0xff, 0x00, 0xff, 0xff
 #define BLACK   0x00, 0x00, 0x00, 0xff
 
-u8 bmpFlag[] = {
 #if 0
-    RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE,
-    RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE,
-    RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE,
-#else
-    MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, 
-    BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA,
-    MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, 
-    BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA,
-    MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, 
-    BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA,
-    MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, 
-    BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA,
+typedef struct
+{
+    VgVertices *vertices;
+    VgTexture *texture;
+} VgObject;
 #endif
+
+u8 bmpDefault[] = {
+    MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, 
+    BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA,
+    MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, 
+    BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA,
+    MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, 
+    BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA,
+    MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, 
+    BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA, BLACK, MAGENTA,
 };
 
-VgGLArrayBuffer abTriangle = {0};
+struct
+{
+    mat4 projection;
+    mat4 view;
+} vgState = {0};
+
+VgGLArrayBuffer abSquare = {0};
 VgGLProgram prgMain = {0};
-VgGLTexture txtFlag = {0};
+VgGLTexture txtDefault = {0};
 
 mat4 model = {0};
-mat4 view = {0};
-mat4 projection = {0};
 
 void VgInit(void)
 {
-    VgGLArrayBuffer_Init(vrtTriangle, sizeof(vrtTriangle), &abTriangle);
+    VgGLArrayBuffer_Init(vrtSquare, sizeof(vrtSquare), &abSquare);
     VgGLProgram_Init(srcVert, srcFrag, &prgMain);
-    VgGLTexture_Init(8, 8, (u8*) bmpFlag, &txtFlag);
+    VgGLTexture_Init(8, 8, (u8*) bmpDefault, &txtDefault);
 
     model = Mat4Identity();
-    Mat4LookAt(VEC3(0.0, 0.0, 5.0), VEC3(0.0, 0.0, 0.0), VEC3(0.0, 1.0, 0.0), &view);
+    Mat4Scale(VEC3(0.1, 0.1, 0.1), &model);
+    Mat4LookAt(VEC3(0.0, 0.0, 5.0), VEC3(0.0, 0.0, 0.0), VEC3(0.0, 1.0, 0.0), &vgState.view);
 
     glClearColor(0.1, 0.1, 0.1, 1.0);
 
-    HtLog("Vg: initialized");
+    HtLog("Vg: initialized\n");
     VgpLogRendererInfo();
 }
 
 void VgpLogRendererInfo(void)
 {
-    HtLog("Vg: renderer info:");
+    HtLog("Vg: renderer info:\n");
     VgGLLogRendererInfo();
 }
 
@@ -102,19 +109,21 @@ void VgUpdate(void)
 
     VgGetDisplaySize(&displaySize);
     ratio = (float) displaySize.width / (float) displaySize.height;
-    Mat4Ortho(-ratio, ratio, -1, 1, 0.1, 100, &projection);
+    Mat4Ortho(-ratio, ratio, -1, 1, 0.1, 100, &vgState.projection);
+
+    Mat4Translate(VEC3(0.01, 0.0, 0.0), &model);
 
     VgpBeginFrame();
 
     VgGLProgram_Use(&prgMain);
     result = VgGLProgram_UniformMat4(&prgMain, "uModel", &model);
     HtAssert(result);
-    result = VgGLProgram_UniformMat4(&prgMain, "uView", &view);
+    result = VgGLProgram_UniformMat4(&prgMain, "uView", &vgState.view);
     HtAssert(result);
-    result = VgGLProgram_UniformMat4(&prgMain, "uProjection", &projection);
+    result = VgGLProgram_UniformMat4(&prgMain, "uProjection", &vgState.projection);
     HtAssert(result);
-    VgGLTexture_Bind(&txtFlag);
-    VgGLArrayBuffer_Draw(&abTriangle);
+    VgGLTexture_Bind(&txtDefault);
+    VgGLArrayBuffer_Draw(&abSquare);
 
     VgpEndFrame();
 }
@@ -136,5 +145,6 @@ void VgpOnResize(const VgDisplaySize *displaySize)
 void VgShutdown(void)
 {
     VgGLProgram_DeInit(&prgMain);
-    VgGLArrayBuffer_DeInit(&abTriangle);
+    VgGLTexture_DeInit(&txtDefault);
+    VgGLArrayBuffer_DeInit(&abSquare);
 }

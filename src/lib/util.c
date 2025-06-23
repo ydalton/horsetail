@@ -17,11 +17,8 @@ const char *HtResultToString(HtResult result)
     RESULT_CASE(HT_ERROR_NO_MEMORY);
     RESULT_CASE(HT_ERROR_NOT_FOUND);
     RESULT_CASE(HT_ERROR_INVALID_ARGUMENT);
-    RESULT_CASE(HT_ERROR_UNKNOWN);
-    /* we should not land here */
-    default:
-        HtDebugBreak();
-        break;
+    RESULT_CASE(HT_ERROR_GENERIC);
+    RESULT_CASE(HT_ERROR_TOO_SMALL);
     }
 
     return message;

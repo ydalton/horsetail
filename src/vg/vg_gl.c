@@ -34,7 +34,7 @@ void VgGLLogRendererInfo(void)
     {
         struct VgGLRendererProperty *rendererProperty = &gRendererProperties[i];
 
-        HtLog("Vg: \t%s: %s", rendererProperty->name, glGetString(rendererProperty->property));
+        HtLog("Vg:   %s: %s", rendererProperty->name, glGetString(rendererProperty->property));
     }
 }
 
@@ -59,7 +59,7 @@ HtBool VgGLArrayBuffer_Init(f32 *vertices, usize sizeVertex, VgGLArrayBuffer *ar
 
     for (i = 0; i < HT_ARRAY_SIZE(gVertexAttribPointers); i++)
     {
-        stride += gVertexAttribPointers[i];
+        stride += gVertexAttribPointers[i] * sizeof(f32);
     }
     
     vertexCount = sizeVertex / stride;
@@ -67,6 +67,8 @@ HtBool VgGLArrayBuffer_Init(f32 *vertices, usize sizeVertex, VgGLArrayBuffer *ar
     arrayBuffer->hArrayBuffer = hArrayBuffer;
     arrayBuffer->stride = stride;
     arrayBuffer->vertexCount = vertexCount;
+
+    HtLog("Vg: created vertex buffer id %u count %u", arrayBuffer->hArrayBuffer, arrayBuffer->vertexCount);
 
     return HT_TRUE;
 }
@@ -103,7 +105,7 @@ void VgGLArrayBuffer_Draw(VgGLArrayBuffer *arrayBuffer)
         usize size = gVertexAttribPointers[i];
 
         glEnableVertexAttribArray(i);
-        glVertexAttribPointer(i, size, GL_FLOAT, GL_FALSE, arrayBuffer->stride * sizeof(f32), (void*) offset);
+        glVertexAttribPointer(i, size, GL_FLOAT, GL_FALSE, arrayBuffer->stride, (void*) offset);
 
         offset += size * sizeof(f32);
     }
@@ -246,6 +248,14 @@ void VgGLTexture_Bind(VgGLTexture *texture)
     }
 
     glBindTexture(GL_TEXTURE_2D, hTexture);
+}
+
+void VgGLTexture_DeInit(VgGLTexture *texture)
+{
+    HtAssert(texture != NULL);
+
+    glBindTexture(GL_TEXTURE_2D, GL_NULL_OBJECT);
+    glDeleteTextures(1, &texture->hTexture);
 }
 
 void VgGLBeginFrame(void)

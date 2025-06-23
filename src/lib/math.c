@@ -83,3 +83,17 @@ void Mat4LookAt(vec3 position, vec3 target, vec3 up, mat4 *outMatrix)
     outMatrix->data[2][3] = 0;
     outMatrix->data[3][3] = 1;
 }
+
+void Mat4Translate(vec3 translation, mat4 *matrix)
+{
+    matrix->data[3][0] += translation.x;
+    matrix->data[3][1] += translation.y;
+    matrix->data[3][2] += translation.z;
+}
+
+void Mat4Scale(vec3 scale, mat4 *matrix)
+{
+    matrix->data[0][0] *= scale.x;
+    matrix->data[1][1] *= scale.y;
+    matrix->data[2][2] *= scale.z;
+}

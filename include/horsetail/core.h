@@ -5,10 +5,15 @@
 
 void HtMain(void);
 
+/* subsystem init functions */
+void LgInit(void);
+void EnInit(void);
+
 /* subsystem handler functions */
 HtBool LgHandleEvent();
 
 /* subsystem update functions */
 void LgUpdate();
+void EnUpdate();
 
 #endif

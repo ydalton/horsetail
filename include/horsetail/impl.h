@@ -10,4 +10,9 @@ void ImplGetEvents(void);
 void ImplFinishUpdate(void);
 void ImplShowError(const char *buf);
 
+void *ImplMemAlloc(usize size);
+void ImplMemFree(void *ptr);
+HtResult ImplReadFileToMemory(const char *path, void *fileMemory, usize maxSize);
+HtResult ImplGetFileSize(const char *path, usize *outFileSize);
+
 #endif

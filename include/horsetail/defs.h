@@ -13,6 +13,7 @@ typedef int32_t     i32;
 
 typedef float       f32;
 typedef size_t      usize;
+typedef i32         isize;
 
 typedef enum
 {
@@ -22,12 +23,15 @@ typedef enum
 
 typedef enum
 {
+    HT_ERROR_TOO_SMALL          = -5,
     HT_ERROR_NO_MEMORY          = -4,
     HT_ERROR_INVALID_ARGUMENT   = -3,
     HT_ERROR_NOT_FOUND          = -2,
-    HT_ERROR_UNKNOWN            = -1,
+    HT_ERROR_GENERIC            = -1,
     HT_SUCCESS                  = 0,
 } HtResult;
+
+#define HT_ENGINE_NAME          "horsetail"
 
 #ifndef HT_DEBUG
 # ifdef DEBUG
@@ -37,7 +41,7 @@ typedef enum
 
 #define HT_INLINE               __inline__
 #define HT_UNUSED(x)            (void)x
-#define HT_TO_STRING(str)       (#str)
+#define HT_TO_STRING(str)       #str
 #define HT_ARRAY_SIZE(arr)      (sizeof(arr)/sizeof(arr[0]))
 
 #if defined(__i386__) || defined(__x86_64__)
@@ -51,20 +55,27 @@ typedef enum
 #  define HtAssert(statement)     assert((statement))
 # else
 #  define HtAssert(statement) \
-    do                                                      \
-    {                                                       \
-        if (statement)                                      \
-        {                                                   \
-        }                                                   \
-        else                                                \
-        {                                                   \
-            HtShowError("Assertion \"" #statement "\" failed.\n");\
-            HtDebugBreak();                                 \
-        }                                                   \
-    } while(0)                                      
+    do                                                                                                   \
+    {                                                                                                    \
+        if (statement)                                                                                   \
+        {                                                                                                \
+        }                                                                                                \
+        else                                                                                             \
+        {                                                                                                \
+            HtShowError(__FILE__ " " HT_TO_STRING(__LINE__) ": Assertion \"" #statement "\" failed.\n"); \
+            HtDebugBreak();                                                                              \
+        }                                                                                                \
+    } while(0);
+# define HtAssertNotReached() \
+    do                                                                                    \
+    {                                                                                     \
+        HtShowError(__FILE__ " " HT_TO_STRING(__LINE__) ": unreachable code reached.\n"); \
+        HtDebugBreak();                                                                   \
+    } while(0);
 # endif
 #else
 # define HtAssert(statement)
+# define HtAssertNotReached()
 #endif
 
 

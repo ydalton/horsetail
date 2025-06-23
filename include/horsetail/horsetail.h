@@ -5,5 +5,6 @@
 #include "horsetail/core.h"
 #include "horsetail/event.h"
 #include "horsetail/util.h"
+#include "horsetail/string.h"
 
 #endif

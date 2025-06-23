@@ -31,6 +31,9 @@ static HT_INLINE void Mat4Copy(mat4 src, mat4 dest)
     }
 }
 
+void Mat4Translate(vec3 translation, mat4 *matrix);
+void Mat4Scale(vec3 scale, mat4 *matrix);
+
 void Mat4Ortho(f32 left, f32 right, f32 bottom, f32 top, f32 near, f32 far, mat4 *matrix);
 void Mat4LookAt(vec3 position, vec3 target, vec3 up, mat4 *matrix);
 

@@ -1,5 +1,4 @@
 #include <SDL3/SDL.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "horsetail/horsetail.h"
@@ -38,6 +37,8 @@ void ImplInit(void)
     SDL_GL_SetSwapInterval(1);
 
     SDL_GL_CreateContext(gWindow);
+
+    HtLog("Impl: initialized");
 }
 
 void ImplBeginLoop(void)
@@ -144,10 +145,6 @@ void ImplFinishUpdate()
     SDL_GL_SwapWindow(gWindow);
 }
 
-void ImplShowError(const char *buf)
-{
-    fputs(buf, stderr);
-}
 
 void ImplShutdown(int code)
 {

@@ -3,7 +3,7 @@ project(
   'c',
   version: 'v0.0.1',
   default_options: [
-    'c_std=c89',
+    'c_std=c99',
     'warning_level=2',
     'werror=true'
   ]
@@ -19,18 +19,11 @@ if get_option('buildtype') == 'debug'
   add_project_arguments('-DHT_DEBUG', language: 'c')
 endif
 
-horsetail_sources = files(
-  'src/core/event.c',
-  'src/core/main.c',
-  'src/lg/lg.c',
-  'src/lib/math.c',
-  'src/lib/util.c',
-  'src/mem/mem.c',
-  'src/impl/sdl.c',
-  'src/vg/vg.c',
-  'src/vg/vg_gl.c',
-  'src/vg/display.c',
-)
+add_project_arguments('-DHT_ENGINE_VERSION="' + meson.project_version() + '"', language: 'c')
+
+horsetail_sources = files()
+
+subdir('src')
 
 horsetail_dependencies = [
   sdl3_dep,

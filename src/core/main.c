@@ -1,12 +1,12 @@
 #define _ISOC99_SOURCE
 #include <stdio.h>
+#include <stdarg.h>
 
 #include "horsetail/horsetail.h"
 #include "horsetail/impl.h"
+#include "horsetail/en.h"
 #include "horsetail/vg.h"
-
-#include <stdio.h>
-#include <stdarg.h>
+#include "horsetail/rs.h"
 
 static void HtpProcessEvents(void);
 static HtBool HtpSystemEventHandler(HtEvent *event);
@@ -20,16 +20,28 @@ static HtEventHandlerProc gEventHandlers[] = {
 
 void HtMain(void)
 {
+    HtLog(HT_ENGINE_NAME " " HT_ENGINE_VERSION);
+
+    /* initialize the implementation */
     ImplInit();
+    /* initialize the entity manager */
+    EnInit();
+    /* initialize the resource manager */
+    RsInit();
+    /* initialize the video/graphics manager */
     VgInit();
 
     while (gRunning)
     {
         ImplBeginLoop();
+
         ImplGetEvents();
         HtpProcessEvents();
+
         LgUpdate();
+        EnUpdate();
         VgUpdate();
+
         ImplFinishUpdate();
     }
 
@@ -115,7 +127,7 @@ void HtShowError(const char *buf)
     ImplShowError(buf);
 }
 
-void HtLog(const char *fmt, ...)
+void _HtLog(const char *fmt, ...)
 {
     char buf[512] = {0};
     usize size = HT_ARRAY_SIZE(buf);
@@ -126,7 +138,7 @@ void HtLog(const char *fmt, ...)
     va_end(args);
 
     /* TODO: change this */
-    puts(buf);
+    fputs(buf, stdout);
 }
 
 static void HtpShutdown(int code)
