@@ -3,9 +3,13 @@
 
 #include "horsetail/vg.h"
 
+HT_BEGIN_DECLS
+
 void VgpLogRendererInfo(void);
 void VgpBeginFrame(void);
 void VgpEndFrame(void);
 void VgpOnResize(const VgDisplaySize *displaySize);
+
+HT_END_DECLS
 
 #endif

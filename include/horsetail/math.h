@@ -3,7 +3,10 @@
 
 #include "horsetail/defs.h"
 
-#define HT_PI       3.14159265358979
+HT_BEGIN_DECLS
+
+#define HT_PI           3.14159265358979
+#define HT_EPSILON      0.0001
 
 f32 HtSin(f32 x);
 f32 HtCos(f32 x);
@@ -13,5 +16,7 @@ f32 HtAbs(f32 x);
 
 #include "vector.h"
 #include "matrix.h"
+
+HT_END_DECLS
 
 #endif

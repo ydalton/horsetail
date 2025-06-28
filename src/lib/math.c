@@ -5,22 +5,22 @@
 
 f32 HtSin(f32 x)
 {
-    return sin(x);
+    return sinf(x);
 }
 
 f32 HtCos(f32 x)
 {
-    return cos(x);
+    return cosf(x);
 }
 
 f32 HtTan(f32 x)
 {
-    return tan(x);
+    return tanf(x);
 }
 
 f32 HtSqrt(f32 x)
 {
-    return sqrt(x);
+    return sqrtf(x);
 }
 
 f32 HtAbs(f32 x)

@@ -3,7 +3,6 @@
 
 #include "horsetail/horsetail.h"
 #include "horsetail/math.h"
-#include "horsetail/vg.h"
 
 typedef i32     HtEntity;
 

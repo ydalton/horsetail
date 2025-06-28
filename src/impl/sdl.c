@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "horsetail/horsetail.h"
+#include "horsetail_private.h"
 #include "horsetail/impl.h"
 #include "horsetail/vg.h"
 
@@ -9,20 +10,10 @@ SDL_Window *gWindow = NULL;
 
 static HtKey ImplpGetKeycode(SDL_Keycode keycode);
 
-int main(int argc, char **argv)
-{
-    /* TODO: to be used later */
-    (void) argc;
-    (void) argv;
-
-    HtMain();
-
-    return 0;
-}
 
 void ImplInit(void)
 {
-    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(0);
     gWindow = SDL_CreateWindow(VG_DISPLAY_DEFAULT_NAME,
                                VG_DISPLAY_DEFAULT_WIDTH,
                                VG_DISPLAY_DEFAULT_HEIGHT,
@@ -38,7 +29,7 @@ void ImplInit(void)
 
     SDL_GL_CreateContext(gWindow);
 
-    HtLog("Impl: initialized");
+    HtLog("Impl (SDL): initialized\n");
 }
 
 void ImplBeginLoop(void)
@@ -145,6 +136,13 @@ void ImplFinishUpdate()
     SDL_GL_SwapWindow(gWindow);
 }
 
+HtBool ImplUploadAudio(u8 *data, usize size)
+{
+    HT_UNUSED(data);
+    HT_UNUSED(size);
+
+    return HT_TRUE;
+}
 
 void ImplShutdown(int code)
 {

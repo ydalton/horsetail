@@ -21,7 +21,7 @@ typedef union
     };
 } vec2;
 
-typedef union
+typedef union _vec3
 {
     f32 data[3];
     struct 
@@ -39,6 +39,9 @@ typedef union
             f32 z,b,w;
         };
     };
+#ifdef __cplusplus
+    _vec3 operator * (_vec3 &other);
+#endif
 } vec3;
 
 typedef union

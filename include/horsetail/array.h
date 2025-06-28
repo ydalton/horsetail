@@ -1,7 +1,9 @@
 #ifndef _HORSETAIL_ARRAY_H_
 #define _HORSETAIL_ARRAY_H_
 
-#include "horsetail/defs.h"
+#include "horsetail/horsetail.h"
+
+HT_BEGIN_DECLS
 
 struct _HtArray;
 
@@ -9,6 +11,7 @@ typedef struct _HtArray HtArray;
 
 HtArray *_HtArray_Create(usize capacity, usize stride);
 void *HtArray_GetData(HtArray *array);
+void _HtArray_Push(HtArray **array, const void *value);
 usize HtArray_GetLength(HtArray *array);
 void _HtArray_Resize(HtArray **array);
 void _HtArray_Destroy(HtArray *array);
@@ -20,8 +23,10 @@ void _HtArray_Destroy(HtArray *array);
 
 #define HtArray_Push(array, value)  \
     {                                   \
-        typeof(value) tmp = value       \
-        _HtArray_Push(&array, &tmp);    \
+        __typeof__(value) tmp = value;       \
+        _HtArray_Push(array, &tmp);    \
     }
+
+HT_END_DECLS
 
 #endif

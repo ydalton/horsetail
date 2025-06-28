@@ -1,7 +1,6 @@
 #include <GLES2/gl2.h>
 
-#include "horsetail/defs.h"
-#include "horsetail/core.h"
+#include "horsetail/horsetail.h"
 #include "horsetail/math.h"
 #include "horsetail/vg.h"
 
@@ -34,7 +33,7 @@ void VgGLLogRendererInfo(void)
     {
         struct VgGLRendererProperty *rendererProperty = &gRendererProperties[i];
 
-        HtLog("Vg:   %s: %s", rendererProperty->name, glGetString(rendererProperty->property));
+        HtLog("Vg:   %s: %s\n", rendererProperty->name, glGetString(rendererProperty->property));
     }
 }
 
@@ -45,7 +44,7 @@ void VgGLSetViewport(const VgDisplaySize *displaySize)
 
 HtBool VgGLArrayBuffer_Init(f32 *vertices, usize sizeVertex, VgGLArrayBuffer *arrayBuffer)
 {
-    hArrayBuffer hArrayBuffer = 0;
+    GLArrayBuffer hArrayBuffer = 0;
     usize stride = 0;
     usize vertexCount = 0;
     usize i = 0;
@@ -64,18 +63,18 @@ HtBool VgGLArrayBuffer_Init(f32 *vertices, usize sizeVertex, VgGLArrayBuffer *ar
     
     vertexCount = sizeVertex / stride;
 
-    arrayBuffer->hArrayBuffer = hArrayBuffer;
+    arrayBuffer->arrayBuffer = hArrayBuffer;
     arrayBuffer->stride = stride;
     arrayBuffer->vertexCount = vertexCount;
 
-    HtLog("Vg: created vertex buffer id %u count %u", arrayBuffer->hArrayBuffer, arrayBuffer->vertexCount);
+    HtLog("Vg: created vertex buffer id %u, vertex count %u\n", arrayBuffer->arrayBuffer, arrayBuffer->vertexCount);
 
     return HT_TRUE;
 }
 
-void VgGLArrayBuffer_Bind(VgGLArrayBuffer *arrayBuffer)
+void VgGLArrayBuffer_Bind(const VgGLArrayBuffer *arrayBuffer)
 {
-    hArrayBuffer hArrayBuffer;
+    GLArrayBuffer hArrayBuffer;
 
     if (arrayBuffer == NULL)
     {
@@ -83,23 +82,23 @@ void VgGLArrayBuffer_Bind(VgGLArrayBuffer *arrayBuffer)
     }
     else
     {
-        hArrayBuffer = arrayBuffer->hArrayBuffer;
+        hArrayBuffer = arrayBuffer->arrayBuffer;
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, hArrayBuffer);
 }
 
-void VgGLArrayBuffer_Draw(VgGLArrayBuffer *arrayBuffer)
+void VgGLArrayBuffer_Draw(const VgGLArrayBuffer *arrayBuffer)
 {
     usize i;
     usize offset = 0;
 
     HtAssert(arrayBuffer != NULL);
-    HtAssert(arrayBuffer->hArrayBuffer != GL_NULL_OBJECT);
+    HtAssert(arrayBuffer->arrayBuffer != GL_NULL_OBJECT);
     HtAssert(arrayBuffer->stride != 0);
     HtAssert(arrayBuffer->vertexCount != 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, arrayBuffer->hArrayBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, arrayBuffer->arrayBuffer);
     for(i = 0; i < HT_ARRAY_SIZE(gVertexAttribPointers); i++)
     {
         usize size = gVertexAttribPointers[i];
@@ -117,14 +116,14 @@ void VgGLArrayBuffer_DeInit(VgGLArrayBuffer *arrayBuffer)
 {
     HtAssert(arrayBuffer != NULL);
 
-    glDeleteBuffers(1, &arrayBuffer->hArrayBuffer);
+    glDeleteBuffers(1, &arrayBuffer->arrayBuffer);
 }
 
 HtBool VgGLProgram_Init(const char *srcVertex, const char *srcFragment, VgGLProgram *program)
 {
-    hShader shdVert = 0;
-    hShader shdFrag = 0;
-    hProgram hProgram = 0;
+    GLShader shdVert = 0;
+    GLShader shdFrag = 0;
+    GLProgram hProgram = 0;
     GLint succeeded = 0;
 
     shdVert = glCreateShader(GL_VERTEX_SHADER);
@@ -160,14 +159,14 @@ HtBool VgGLProgram_Init(const char *srcVertex, const char *srcFragment, VgGLProg
     glDeleteShader(shdFrag);
     glDeleteShader(shdVert);
 
-    program->hProgram = hProgram;
+    program->program = hProgram;
 
     return HT_TRUE;
 }
 
-void VgGLProgram_Use(VgGLProgram *program)
+void VgGLProgram_Use(const VgGLProgram *program)
 {
-    hProgram hProgram;
+    GLProgram hProgram;
 
     if (program == NULL)
     {
@@ -175,7 +174,7 @@ void VgGLProgram_Use(VgGLProgram *program)
     }
     else
     {
-        hProgram = program->hProgram;
+        hProgram = program->program;
     }
 
     glUseProgram(hProgram);
@@ -188,11 +187,11 @@ HtBool VgGLProgram_UniformMat4(VgGLProgram *program, const char *name, const mat
     HtAssert(program != NULL);
     HtAssert(name != NULL);
     HtAssert(mat != NULL);
-    HtAssert(program->hProgram != GL_NULL_OBJECT);
+    HtAssert(program->program != GL_NULL_OBJECT);
 
     VgGLProgram_Use(program);
 
-    location = glGetUniformLocation(program->hProgram, name);
+    location = glGetUniformLocation(program->program, name);
     if (location == -1)
     {
         return HT_FALSE;
@@ -206,15 +205,16 @@ HtBool VgGLProgram_UniformMat4(VgGLProgram *program, const char *name, const mat
 void VgGLProgram_DeInit(VgGLProgram *program)
 {
     HtAssert(program != NULL);
-    if (program->hProgram != GL_NULL_OBJECT)
+    if (program->program != GL_NULL_OBJECT)
     {
-        glUseProgram(program->hProgram);
+        glDeleteProgram(program->program);
     }
+    glUseProgram(0);
 }
 
-HtBool VgGLTexture_Init(usize width, usize height, u8 *data, VgGLTexture *texture)
+HtBool VgGLTexture_Init(usize width, usize height, const u8 *data, VgGLTexture *texture)
 {
-    hTexture hTexture;
+    GLTexture hTexture;
 
     HtAssert(data != NULL);
     HtAssert(texture != NULL);
@@ -229,14 +229,14 @@ HtBool VgGLTexture_Init(usize width, usize height, u8 *data, VgGLTexture *textur
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glBindTexture(GL_TEXTURE_2D, GL_NULL_OBJECT);
 
-    texture->hTexture = hTexture;
+    texture->texture = hTexture;
 
     return HT_TRUE;
 }
 
-void VgGLTexture_Bind(VgGLTexture *texture)
+void VgGLTexture_Bind(const VgGLTexture *texture)
 {
-    hTexture hTexture;
+    GLTexture hTexture;
 
     if (texture == NULL)
     {
@@ -244,7 +244,7 @@ void VgGLTexture_Bind(VgGLTexture *texture)
     }
     else
     {
-        hTexture = texture->hTexture;
+        hTexture = texture->texture;
     }
 
     glBindTexture(GL_TEXTURE_2D, hTexture);
@@ -255,7 +255,7 @@ void VgGLTexture_DeInit(VgGLTexture *texture)
     HtAssert(texture != NULL);
 
     glBindTexture(GL_TEXTURE_2D, GL_NULL_OBJECT);
-    glDeleteTextures(1, &texture->hTexture);
+    glDeleteTextures(1, &texture->texture);
 }
 
 void VgGLBeginFrame(void)

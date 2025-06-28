@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include "horsetail/horsetail.h"
+#include "horsetail_private.h"
 #include "horsetail/impl.h"
 #include "horsetail/en.h"
 #include "horsetail/vg.h"
@@ -15,19 +15,26 @@ static void HtpShutdown(int code);
 static HtBool gRunning = HT_TRUE;
 static HtEventHandlerProc gEventHandlers[] = {
     HtpSystemEventHandler,
+    InHandleEvent,
     LgHandleEvent,
 };
 
+#define HT_BANNER       HT_ENGINE_NAME " " HT_ENGINE_VERSION
+
 void HtMain(void)
 {
-    HtLog(HT_ENGINE_NAME " " HT_ENGINE_VERSION);
+    HtLog(HT_BANNER "\n");
 
     /* initialize the implementation */
     ImplInit();
+    /* initialize the clock */
+    ClkInit();
     /* initialize the entity manager */
     EnInit();
     /* initialize the resource manager */
     RsInit();
+    /* initialize the logic manager */
+    LgInit();
     /* initialize the video/graphics manager */
     VgInit();
 
@@ -38,6 +45,7 @@ void HtMain(void)
         ImplGetEvents();
         HtpProcessEvents();
 
+        ClkUpdate();
         LgUpdate();
         EnUpdate();
         VgUpdate();

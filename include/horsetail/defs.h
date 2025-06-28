@@ -4,7 +4,15 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include "horsetail/log.h"
+#ifdef __cplusplus
+#define HT_BEGIN_DECLS extern "C" {
+#define HT_END_DECLS }
+#else 
+#define HT_BEGIN_DECLS
+#define HT_END_DECLS
+#endif
+
+HT_BEGIN_DECLS
 
 typedef uint8_t     u8;
 typedef uint32_t    u32;
@@ -42,7 +50,13 @@ typedef enum
 #define HT_INLINE               __inline__
 #define HT_UNUSED(x)            (void)x
 #define HT_TO_STRING(str)       #str
+#define HT_CONTENTS_TO_STRING(str) HT_TO_STRING(str)
 #define HT_ARRAY_SIZE(arr)      (sizeof(arr)/sizeof(arr[0]))
+#ifdef __cplusplus
+#define HT_ZERO_INIT        {};
+#else
+#define HT_ZERO_INIT        {0};
+#endif
 
 #if defined(__i386__) || defined(__x86_64__)
 # define HtDebugBreak()      __asm__ volatile("int3")
@@ -62,14 +76,14 @@ typedef enum
         }                                                                                                \
         else                                                                                             \
         {                                                                                                \
-            HtShowError(__FILE__ " " HT_TO_STRING(__LINE__) ": Assertion \"" #statement "\" failed.\n"); \
+            HtShowError(__FILE__ ":" HT_CONTENTS_TO_STRING(__LINE__) ": Assertion \"" #statement "\" failed.\n"); \
             HtDebugBreak();                                                                              \
         }                                                                                                \
     } while(0);
 # define HtAssertNotReached() \
     do                                                                                    \
     {                                                                                     \
-        HtShowError(__FILE__ " " HT_TO_STRING(__LINE__) ": unreachable code reached.\n"); \
+        HtShowError(__FILE__ ":" HT_CONTENTS_TO_STRING(__LINE__) ": unreachable code reached.\n"); \
         HtDebugBreak();                                                                   \
     } while(0);
 # endif
@@ -78,5 +92,13 @@ typedef enum
 # define HtAssertNotReached()
 #endif
 
+
+void _HtLog(const char *fmt, ...);
+void HtError(const char *fmt, ...);
+void HtShowError(const char *buf);
+
+#define HtLog(...)             _HtLog(__VA_ARGS__)
+
+HT_END_DECLS
 
 #endif

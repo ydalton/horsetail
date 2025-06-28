@@ -1,9 +1,12 @@
+#define _POSIX_C_SOURCE 199309L
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "horsetail/impl.h"
+#include "horsetail_private.h"
 
 static usize ImplpGetFileSizeFromFD(int fd);
 
@@ -19,6 +22,18 @@ void *ImplMemAlloc(usize size)
 void ImplMemFree(void *memory)
 {
     free(memory);
+}
+
+f32 ImplGetClockTime(void)
+{
+    struct timespec ts = {0};
+    float clockTime = 0;
+
+    clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
+
+    clockTime = ts.tv_sec + ((float) ts.tv_nsec / 1e9);
+
+    return clockTime;
 }
 
 HtResult ImplReadFileToMemory(const char *path, void *fileMemory, usize maxSize)
@@ -99,4 +114,16 @@ HtResult ImplGetFileSize(const char *path, usize *outFileSize)
 void ImplShowError(const char *buf)
 {
     fputs(buf, stderr);
+    fputc('\n', stderr);
+}
+
+int main(int argc, char **argv)
+{
+    /* TODO: to be used later */
+    (void) argc;
+    (void) argv;
+
+    HtMain();
+
+    return 0;
 }

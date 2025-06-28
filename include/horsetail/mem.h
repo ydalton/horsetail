@@ -3,6 +3,8 @@
 
 #include "horsetail/horsetail.h"
 
+HT_BEGIN_DECLS
+
 typedef enum
 {
     MEM_ALLOC_TAG_NONE = 0,
@@ -15,5 +17,7 @@ typedef enum
 void *MemAlloc(usize size, MemAllocTag tag);
 void *MemRealloc(void *memory, usize size);
 void MemFree(void *ptr);
+
+HT_END_DECLS
 
 #endif

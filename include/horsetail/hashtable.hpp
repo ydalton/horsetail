@@ -1,0 +1,4 @@
+#ifndef _HORSETAIL_HASHTABLE_HPP_
+#define _HORSETAIL_HASHTABLE_HPP_
+
+#endif

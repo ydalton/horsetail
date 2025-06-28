@@ -3,6 +3,8 @@
 
 #include "horsetail/horsetail.h"
 
+HT_BEGIN_DECLS
+
 typedef struct
 {
     usize size;
@@ -11,5 +13,7 @@ typedef struct
 
 HtResult FsLoadFile(const char *path, HtFile *outFile);
 void FsUnloadFile(HtFile *file);
+
+HT_END_DECLS
 
 #endif

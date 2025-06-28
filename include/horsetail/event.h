@@ -5,6 +5,8 @@
 #error "Do not include this file seperately. Include horsetail.h"
 #endif
 
+HT_BEGIN_DECLS
+
 #define HT_MAX_EVENTS           64
 
 typedef enum
@@ -31,6 +33,7 @@ typedef enum
     HT_KEY_LEFT,
     HT_KEY_RIGHT,
     HT_KEY_ESC,
+    HT_KEY_LAST
 } HtKey;
 
 typedef struct {
@@ -53,13 +56,15 @@ typedef struct {
 void HtPostEvent(HtEvent *event);
 HtEvent *HtPopEvent(void);
 
-#define HtPostQuitEvent()           \
-    {                               \
-        HtEvent event = {0};        \
-        event.type = HT_EVENT_QUIT; \
-        HtPostEvent(&event);        \
+#define HtPostQuitEvent()             \
+    {                                 \
+        HtEvent event = HT_ZERO_INIT; \
+        event.type = HT_EVENT_QUIT;   \
+        HtPostEvent(&event);          \
     }
 
 typedef HtBool (*HtEventHandlerProc)(HtEvent *);
+
+HT_END_DECLS
 
 #endif
