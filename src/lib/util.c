@@ -19,6 +19,7 @@ const char *HtResultToString(HtResult result)
     RESULT_CASE(HT_ERROR_INVALID_ARGUMENT);
     RESULT_CASE(HT_ERROR_GENERIC);
     RESULT_CASE(HT_ERROR_TOO_SMALL);
+    RESULT_CASE(HT_ERROR_UNIMPLEMENTED);
     }
 
     return message;

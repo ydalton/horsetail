@@ -11,6 +11,7 @@ void HtMain(void);
 void LgInit(void);
 void EnInit(void);
 void ClkInit(void);
+void VgInit(void);
 
 /* subsystem handler functions */
 HtBool LgHandleEvent(HtEvent *event);
@@ -20,6 +21,10 @@ HtBool InHandleEvent(HtEvent *event);
 void ClkUpdate(void);
 void LgUpdate(void);
 void EnUpdate(void);
+void VgUpdate(void);
+
+/* subsystem shutdown  function */
+void VgShutdown(void);
 
 HT_END_DECLS
 

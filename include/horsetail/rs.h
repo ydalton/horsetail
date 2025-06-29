@@ -17,8 +17,6 @@ typedef enum
 
 typedef struct
 {
-    u32 id;
-    char identifier[RS_IDENTIFIER_MAX_LENGTH];
     HtFile file;
     HtResourceType type;
     union
@@ -34,7 +32,8 @@ typedef struct
 
 void RsInit(void);
 HtResult RsLoadResource(const char *path, HtResourceType resourceType, const char *identifier, HtResource **outResource);
-HtResult RsGetResource(const char *identifier, HtResource **outResource);
+HtBool RsResourceIsLoaded(const char *identifier);
+HtResource *RsGetResource(const char *identifier);
 void RsUnloadResource(HtResource *resource);
 
 #define RsLoadTexture(path, identifier, outResource)        RsLoadResource(path, HT_RESOURCE_TYPE_TEXTURE, identifier, outResource)

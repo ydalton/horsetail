@@ -7,6 +7,7 @@
 #include "horsetail/vg.h"
 
 SDL_Window *gWindow = NULL;
+SDL_GLContext context = NULL;
 
 static HtKey ImplpGetKeycode(SDL_Keycode keycode);
 
@@ -27,7 +28,7 @@ void ImplInit(void)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
     SDL_GL_SetSwapInterval(1);
 
-    SDL_GL_CreateContext(gWindow);
+    context = SDL_GL_CreateContext(gWindow);
 
     HtLog("Impl (SDL): initialized\n");
 }
@@ -146,7 +147,9 @@ HtBool ImplUploadAudio(u8 *data, usize size)
 
 void ImplShutdown(int code)
 {
+    SDL_GL_DestroyContext(context);
     SDL_DestroyWindow(gWindow);
+    SDL_Quit();
 
     exit(code);
 }

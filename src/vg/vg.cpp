@@ -4,6 +4,8 @@
 #include "horsetail/impl.h"
 #include "horsetail/rs.h"
 
+#include "horsetail_private.h"
+
 #include "vgp.h"
 #include "vg_gl.h"
 
@@ -117,7 +119,7 @@ void VgpOnResize(const VgDisplaySize *displaySize)
 
 void VgShutdown(void)
 {
-    VgGLProgram_DeInit(&prgMain);
-    VgGLTexture_DeInit(&txtDefault);
-    VgGLArrayBuffer_DeInit(&abSquare);
+    prgMain.DeInit();
+    txtDefault.DeInit();
+    abSquare.DeInit();
 }

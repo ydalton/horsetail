@@ -31,6 +31,7 @@ typedef enum
 
 typedef enum
 {
+    HT_ERROR_UNIMPLEMENTED      = -6,
     HT_ERROR_TOO_SMALL          = -5,
     HT_ERROR_NO_MEMORY          = -4,
     HT_ERROR_INVALID_ARGUMENT   = -3,

@@ -13,3 +13,8 @@ void HtCopyMemory(void *dest, const void *src, usize size)
 {
     memcpy(dest, src, size);
 }
+
+usize HtStringLength(const char *str)
+{
+    return strlen(str);
+}
