@@ -12,6 +12,7 @@ horsetail_sources += files(
   'lib/math.cpp',
   'lib/string.c',
   'lib/util.c',
+  'mem/arena.c',
   'mem/mem.c',
   'rs/rs.cpp',
   'spr/spr.c',
