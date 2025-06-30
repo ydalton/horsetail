@@ -14,7 +14,9 @@ static HtKey ImplpGetKeycode(SDL_Keycode keycode);
 
 void ImplInit(void)
 {
+
     SDL_Init(0);
+
     gWindow = SDL_CreateWindow(VG_DISPLAY_DEFAULT_NAME,
                                VG_DISPLAY_DEFAULT_WIDTH,
                                VG_DISPLAY_DEFAULT_HEIGHT,
@@ -24,11 +26,16 @@ void ImplInit(void)
 
     /* we want OpenGL ES 2.0 */
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
     SDL_GL_SetSwapInterval(1);
 
     context = SDL_GL_CreateContext(gWindow);
+    HtAssert(context != NULL);
 
     HtLog("Impl (SDL): initialized\n");
 }

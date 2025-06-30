@@ -61,8 +61,10 @@ typedef enum
 
 #if defined(__i386__) || defined(__x86_64__)
 # define HtDebugBreak()      __asm__ volatile("int3")
+#elif defined(__clang__)
+# define HtDebugBreak()	     __builtin_debugtrap()
 #else
-# error Unknown CPU
+# error Unknown platform
 #endif
 
 #ifdef HT_DEBUG

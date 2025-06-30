@@ -73,7 +73,7 @@ typedef union
 
 static HT_INLINE vec3 Vec3Add(vec3 a, vec3 b)
 {
-    vec3 result = {0};
+    vec3 result = HT_ZERO_INIT;
 
     result.x = a.x + b.x;
     result.y = a.y + b.y;
@@ -84,7 +84,7 @@ static HT_INLINE vec3 Vec3Add(vec3 a, vec3 b)
 
 static HT_INLINE vec3 Vec3Sub(vec3 a, vec3 b)
 {
-    vec3 result = {0};
+    vec3 result = HT_ZERO_INIT;
 
     result.x = a.x - b.x;
     result.y = a.y - b.y;

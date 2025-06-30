@@ -22,7 +22,7 @@ struct _mat4 {
 
 static HT_INLINE mat4 Mat4Identity()
 {
-    mat4 matrix = {0};
+    mat4 matrix = HT_ZERO_INIT;
 
     matrix.data[0][0] = 1.0;
     matrix.data[1][1] = 1.0;

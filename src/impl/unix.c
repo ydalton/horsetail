@@ -29,7 +29,7 @@ f32 ImplGetClockTime(void)
     struct timespec ts = {0};
     float clockTime = 0;
 
-    clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
+    clock_gettime(CLOCK_MONOTONIC, &ts);
 
     clockTime = ts.tv_sec + ((float) ts.tv_nsec / 1e9);
 
