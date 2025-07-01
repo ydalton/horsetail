@@ -1,0 +1,8 @@
+[
+    {
+        "label": "Debug",
+        "adapter": "GDB",
+        "request": "launch",
+        "program": "./build/ht",
+    }
+]
