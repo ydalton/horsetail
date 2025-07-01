@@ -1,8 +1,12 @@
 [
     {
         "label": "Debug",
-        "adapter": "GDB",
+        "adapter": "CodeLLDB",
         "request": "launch",
         "program": "./build/ht",
+        "build": [
+            "command": "meson",
+            "args": ["compile", "-C", "build"]
+        ]
     }
 ]
