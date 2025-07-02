@@ -1,6 +1,6 @@
 [
     {
-        "label": "Build & Run",
-        "command": "meson compile -C build && ./build/ht"
+        "label": "Build",
+        "command": "meson compile -C build"
     }
 ]

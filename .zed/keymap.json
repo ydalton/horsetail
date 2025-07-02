@@ -1,0 +1,8 @@
+[
+  {
+    "context": "Workspace"
+    "bindings": {
+      "ctrl-F5": ["task::Spawn", {"task_name": "Build"}]
+    }
+  }
+]
