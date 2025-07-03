@@ -75,6 +75,9 @@ static void ImplpInitAudio(void)
     {
         HtError("SDL: Failed to open audio device stream: %s\n", SDL_GetError());
     }
+
+    /* very important, otherwise it will not play */
+    SDL_ResumeAudioStreamDevice(gAudioStream);
 }
 
 void ImplBeginLoop(void)
