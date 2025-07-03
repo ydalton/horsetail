@@ -25,17 +25,12 @@ void HtMain(void)
 {
     HtLog(HT_BANNER "\n");
 
-    /* initialize the implementation */
     ImplInit();
-    /* initialize the clock */
     ClkInit();
-    /* initialize the entity manager */
     EnInit();
-    /* initialize the resource manager */
     RsInit();
-    /* initialize the logic manager */
+    AuInit();
     LgInit();
-    /* initialize the video/graphics manager */
     VgInit();
 
     while (gRunning)
@@ -48,6 +43,7 @@ void HtMain(void)
         ClkUpdate();
         LgUpdate();
         EnUpdate();
+        AuUpdate();
         VgUpdate();
 
         ImplFinishUpdate();

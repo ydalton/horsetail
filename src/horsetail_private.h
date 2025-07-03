@@ -12,6 +12,7 @@ void LgInit(void);
 void EnInit(void);
 void ClkInit(void);
 void VgInit(void);
+void AuInit(void);
 
 /* subsystem handler functions */
 HtBool LgHandleEvent(HtEvent *event);
@@ -22,6 +23,7 @@ void ClkUpdate(void);
 void LgUpdate(void);
 void EnUpdate(void);
 void VgUpdate(void);
+void AuUpdate(void);
 
 /* subsystem shutdown  function */
 void VgShutdown(void);

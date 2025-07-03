@@ -20,6 +20,8 @@ HtResult ImplGetFileSize(const char *path, usize *outFileSize);
 
 f32 ImplGetClockTime(void);
 
+HtBool ImplUploadAudio(u8 *data, usize size);
+
 HT_END_DECLS
 
 #endif

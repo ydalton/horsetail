@@ -7,23 +7,44 @@
 #include "horsetail/vg.h"
 
 SDL_Window *gWindow = NULL;
-SDL_GLContext context = NULL;
+SDL_GLContext gContext = NULL;
+SDL_AudioStream *gAudioStream = NULL;
 
 static HtKey ImplpGetKeycode(SDL_Keycode keycode);
+static void ImplpInitWindow(void);
+static void ImplpInitOpenGL(void);
+static void ImplpInitAudio(void);
 
-
+/* todo: change asserts to  */
 void ImplInit(void)
 {
 
-    SDL_Init(0);
+    SDL_Init(SDL_INIT_AUDIO);
 
+    ImplpInitWindow();
+    HtLog("Impl (SDL): successfully created window\n");
+
+    ImplpInitOpenGL();
+    HtLog("Impl (SDL): successfully created OpenGL ES context\n");
+
+    ImplpInitAudio();
+    HtLog("Impl (SDL): successfully opened audio device\n");
+
+    HtLog("Impl (SDL): initialized\n");
+}
+
+static void ImplpInitWindow(void)
+{
     gWindow = SDL_CreateWindow(VG_DISPLAY_DEFAULT_NAME,
                                VG_DISPLAY_DEFAULT_WIDTH,
                                VG_DISPLAY_DEFAULT_HEIGHT,
                                SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
     HtAssert(gWindow != NULL);
+}
 
+static void ImplpInitOpenGL(void)
+{
     /* we want OpenGL ES 2.0 */
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
@@ -34,10 +55,26 @@ void ImplInit(void)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
     SDL_GL_SetSwapInterval(1);
 
-    context = SDL_GL_CreateContext(gWindow);
-    HtAssert(context != NULL);
+    gContext = SDL_GL_CreateContext(gWindow);
+    HtAssert(gContext != NULL);
+}
 
-    HtLog("Impl (SDL): initialized\n");
+static void ImplpInitAudio(void)
+{
+    SDL_AudioSpec spec = {0};
+    spec.format = SDL_AUDIO_S16;
+    spec.channels = 2;
+    spec.freq = 48000;
+
+    gAudioStream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK,
+                                             &spec,
+                                             NULL,
+                                             NULL);
+
+    if (gAudioStream == NULL)
+    {
+        HtError("SDL: Failed to open audio device stream: %s\n", SDL_GetError());
+    }
 }
 
 void ImplBeginLoop(void)
@@ -146,15 +183,17 @@ void ImplFinishUpdate()
 
 HtBool ImplUploadAudio(u8 *data, usize size)
 {
-    HT_UNUSED(data);
-    HT_UNUSED(size);
+    HtBool succeeded = HT_FALSE;
 
-    return HT_TRUE;
+    succeeded = SDL_PutAudioStreamData(gAudioStream, data, size);
+
+    return succeeded;
 }
 
 void ImplShutdown(int code)
 {
-    SDL_GL_DestroyContext(context);
+    SDL_DestroyAudioStream(gAudioStream);
+    SDL_GL_DestroyContext(gContext);
     SDL_DestroyWindow(gWindow);
     SDL_Quit();
 

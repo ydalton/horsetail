@@ -1,4 +1,5 @@
 horsetail_sources += files(
+  'au.c',
   'event.c',
   'main.c',
   'clk.c',
