@@ -4,9 +4,9 @@
         "adapter": "CodeLLDB",
         "request": "launch",
         "program": "./build/ht",
-        "build": [
+        "build": {
             "command": "meson",
             "args": ["compile", "-C", "build"]
-        ]
+        }
     }
 ]
